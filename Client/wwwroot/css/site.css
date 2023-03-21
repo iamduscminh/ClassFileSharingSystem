@@ -1,21 +1,22 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
 .text-limit-3 {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -23,3 +24,54 @@ body {
     -webkit-line-clamp: 3; /* number of lines to show */
     -webkit-box-orient: vertical;
 }
+
+.menu-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu-item {
+    color: #fcc;
+    padding: 3px;
+}
+
+.three-dots:after {
+    cursor: pointer;
+    color: #444;
+    content: "\2807";
+    font-size: 20px;
+    padding: 0 5px;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+
+    a div {
+        padding: 2px;
+    }
+
+.dropdown {
+    position: absolute;
+    right: 10px;
+    background-color: rgb(240, 240, 240);
+    padding: 10px;
+    border-radius: 8px solid;
+    outline: none;
+    opacity: 0;
+    z-index: -1;
+    max-height: 0;
+    transition: opacity 0.1s, z-index 0.1s;
+}
+
+.dropdown-container:focus {
+    outline: none;
+}
+
+    .dropdown-container:focus .dropdown {
+        opacity: 1;
+        z-index: 100;
+        max-height: 100vh;
+        transition: opacity 0.2s, z-index 0.2s;
+    }
