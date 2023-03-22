@@ -12,5 +12,13 @@ namespace Client.Controllers
         {
             return View();
         }
+        public IActionResult ViewStudent()
+        {
+            return View(@"~/Views/Student/Index.cshtml");
+        }
+        public IActionResult AddStudent()
+        {
+            return View(@"~/Views/Student/AddStudent.cshtml");
+        }
     }
 }

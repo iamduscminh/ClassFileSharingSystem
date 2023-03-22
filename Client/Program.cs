@@ -3,18 +3,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ClassFileSharingContextConnection") ?? throw new InvalidOperationException("Connection string 'ClassFileSharingContextConnection' not found.");
 var config = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true).Build();
-
 // Add services to the container.
 builder.Services.AddDbContext<ClassFileSharingContext>(options =>
 {
-
     options.UseSqlServer(config.GetConnectionString("APDBConnectionStr"));
 });
-
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {     // configure identity options
     options.Password.RequireDigit = false;
@@ -25,7 +22,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ClassFileSharingContext>();
-//.AddDefaultTokenProviders();
+    //.AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -62,9 +59,6 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-
-
-
 
 async Task CreateRoles(IServiceProvider serviceProvider)
 {

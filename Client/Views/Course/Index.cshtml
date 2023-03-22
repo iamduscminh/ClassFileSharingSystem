@@ -20,7 +20,7 @@
                         <div class="dropdown-container" tabindex="-1">
                             <div class="three-dots"></div>
                             <div class="dropdown">
-                                <a href="#"><div>Edit Course</div></a>
+                                <a data-bs-toggle="modal" data-bs-target="#editCourseModal"><div>Edit Course</div></a>
                                 <a href="#"><div>Delete Course</div></a>
                                 <a href="#"><div>Student Manager</div></a>
                             </div>
@@ -36,5 +36,40 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+
+<!-- Modal Change File Name-->
+<div class="modal fade"
+     id="editCourseModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Course</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3 d-flex">
+                    <label for="formFile" class="form-label">Current Name </label>
+                    <input class="form-control" type="text" id="formFile" />
+                </div>
+                <div class="mb-3 d-flex">
+                    <label for="formFile" class="form-label">New Name </label>
+                    <input class="form-control" type="text" id="formFile" />
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>

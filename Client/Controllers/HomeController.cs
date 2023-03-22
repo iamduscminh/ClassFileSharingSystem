@@ -1,5 +1,5 @@
-﻿using Client.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProductIdentityClient.Models;
 using System.Diagnostics;
 
 namespace Client.Controllers

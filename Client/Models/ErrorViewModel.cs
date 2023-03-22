@@ -1,4 +1,4 @@
-namespace Client.Models
+namespace ProductIdentityClient.Models
 {
     public class ErrorViewModel
     {

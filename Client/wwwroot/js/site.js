@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿let domain = "http://localhost:5233/";
 
-// Write your JavaScript code.
+function handleError(response, message) {
+  Swal.fire({
+    icon: "error",
+    title: message,
+    text: response.status + " - " + response.statusText,
+  });
+
+  console.log(JSON.stringify(response));
+}
