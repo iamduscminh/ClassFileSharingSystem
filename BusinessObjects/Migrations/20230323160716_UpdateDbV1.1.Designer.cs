@@ -4,6 +4,7 @@ using BusinessObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObjects.Migrations
 {
     [DbContext(typeof(ClassFileSharingContext))]
-    partial class ClassFileSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20230323160716_UpdateDbV1.1")]
+    partial class UpdateDbV11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,7 +163,7 @@ namespace BusinessObjects.Migrations
 
                     b.HasIndex("ResourceId");
 
-                    b.ToTable("Files");
+                    b.ToTable("File");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Resource", b =>
@@ -187,7 +189,7 @@ namespace BusinessObjects.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Resourses");
+                    b.ToTable("Resource");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

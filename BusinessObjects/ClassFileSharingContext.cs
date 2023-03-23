@@ -1,11 +1,12 @@
 ﻿using BusinessObjects.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace BusinessObjects
 {
-    public partial class ClassFileSharingContext : IdentityDbContext
+    public partial class ClassFileSharingContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
         public ClassFileSharingContext()
         {
@@ -23,7 +24,10 @@ namespace BusinessObjects
             IConfigurationRoot configuration = builder.Build();
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("APDBConnectionStr"));
         }
+        public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
         public virtual DbSet<Course> Courses { get; set; } = null!;
+        public virtual DbSet<Resource> Resourses { get; set; } = null!;
+        public virtual DbSet<BusinessObjects.Entities.File> Files { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +48,7 @@ namespace BusinessObjects
             modelBuilder.Entity<Course>(entity =>
             {
                 entity.HasIndex(e => e.CourseName, "CourseName");
+                
 
                 entity.Property(e => e.CourseId).HasColumnName("CourseId");
             });

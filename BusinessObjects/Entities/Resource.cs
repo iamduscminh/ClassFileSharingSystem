@@ -8,22 +8,15 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.Entities
 {
-    public class Course
+    public class Resource
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CourseId { get; set; }
+        public int ResourceId { get; set; }
         [Required]
         [StringLength(40)]
-        public string CourseName { get; set; }
-
-        [ForeignKey("ApplicationUser")]
-        public string TeacherId { get; set; }
-        ApplicationUser Teacher { get; set; }
+        public string ResourceName { get; set; } = null!;
         public DateTime CreateDate { get; set; }
 
-        public virtual ICollection<ApplicationUser> Students { get; set; }
-        public virtual ICollection<Resource> Resources { get; set; }
-
-
+        public virtual ICollection<File> Files { get; set; }
     }
 }
