@@ -18,7 +18,8 @@ namespace BusinessObjects.Entities
 
         [ForeignKey("ApplicationUser")]
         public string TeacherId { get; set; }
-        ApplicationUser Teacher { get; set; }
+        [NotMapped]
+        public ApplicationUser Teacher { get; set; }
         public DateTime CreateDate { get; set; }
 
         public virtual ICollection<ApplicationUser> Students { get; set; }

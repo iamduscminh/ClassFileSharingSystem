@@ -1,24 +1,23 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using BusinessObjects.Entities
 @{
     ViewData["Title"] = "Course Page";
 }
+@model List<Course>;
 <link rel="stylesheet" href="~/css/index.css" />
 <div class="container mt-5 mb-3">
-     <div class="card rounded-3">
+    <div class="card rounded-3">
         <div class="card-body">
             <h4 class="card-title">Owner: </h4>
             <p class="card-text"><strong>Number of Resource:</strong></p>
             <p class="card-text"><strong>Number of File:</strong></p>
-             <button type="button"
-                        class="btn btn-outline-dark btn-rounded"
-                        data-mdb-ripple-color="dark"
-                        data-bs-toggle="modal"
-                        data-bs-target="#createCourseModal"
-                        style="width:20%">
-                    Create Resource
-                </button>
+            <button type="button"
+                    class="btn btn-outline-dark btn-rounded"
+                    data-mdb-ripple-color="dark"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createCourseModal"
+                    style="width:20%">
+                Create Course
+            </button>
         </div>
     </div>
     <div class="row mt-4">
@@ -50,40 +49,13 @@
                 </div>
             </div>
         </div>
-         <div class="col-md-3">
-            <div class="card p-3 mb-2">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
-                        <div class="ms-2 c-details">
-                            <h6 class="mb-0">Mailchimp</h6> <span>40 students</span>
-                        </div>
-                    </div>
-                    <div class="menu-nav">
-                        <div class="dropdown-container" tabindex="-1">
-                            <div class="three-dots"></div>
-                            <div class="dropdown">
-                                <a data-bs-toggle="modal" data-bs-target="#editCourseModal"><div>Edit Course</div></a>
-                                <a href="#"><div>Delete Course</div></a>
-                                <a href="#"><div>Student Manager</div></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-5">
-                    <h4 class="heading text-limit-3">(WDU203c) UI/UX Design_Thiết kế trải nghiệm người dùng</h4>
-                    <div class="mt-5">
-                        <div class="mt-3"> <a href="#">Go to course</a> </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
     </div>
 </div>
 
 
-<!-- Modal Change File Name-->
+<!-- Modal Change Course Name-->
 <div class="modal fade"
      id="editCourseModal"
      tabindex="-1"
@@ -98,25 +70,27 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3 d-flex">
-                    <label for="formFile" class="form-label">Current Name </label>
-                    <input class="form-control" type="text" id="formFile" />
+            <form action="/Course/SaveCourse" method="post">
+                <div class="modal-body">
+                    <div class="mb-3 d-flex">
+                        <label for="formFile" class="form-label">Current Name </label>
+                        <input class="form-control" type="text" id="formCourseName" name="courseOldName" />
+                    </div>
+                    <div class="mb-3 d-flex">
+                        <label for="formFile" class="form-label">New Name </label>
+                        <input class="form-control" type="text" id="formCourseName" name="courseName" />
+                    </div>
                 </div>
-                <div class="mb-3 d-flex">
-                    <label for="formFile" class="form-label">New Name </label>
-                    <input class="form-control" type="text" id="formFile" />
-                </div>
-            </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
+<!-- Modal Create Course-->
 <div class="modal fade"
      id="createCourseModal"
      tabindex="-1"
@@ -131,16 +105,18 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3 d-flex">
-                    <label for="formFile" class="form-label">Course Name </label>
-                    <input class="form-control" type="text" id="formFile" />
+            <form action="/Course/CreateCourse" method="post">
+                <div class="modal-body">
+                    <div class="mb-3 d-flex">
+                        <label for="formFile" class="form-label">Course Name </label>
+                        <input class="form-control" type="text" id="formCourseName" name="courseName" />
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
