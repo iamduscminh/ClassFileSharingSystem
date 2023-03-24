@@ -27,7 +27,10 @@ builder.Services.AddIdentity<ApplicationUser , IdentityRole>(options =>
     .AddEntityFrameworkStores<ClassFileSharingContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

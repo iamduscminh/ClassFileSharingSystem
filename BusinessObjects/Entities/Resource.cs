@@ -17,6 +17,10 @@ namespace BusinessObjects.Entities
         public string ResourceName { get; set; } = null!;
         public DateTime CreateDate { get; set; }
 
+        [ForeignKey("Course")]
+        public int CourseId { get; set; }
+        [NotMapped]
+        public Course Course { get; set; }
         public virtual ICollection<File> Files { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities;
+using Client.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -10,6 +11,7 @@ namespace Client.Controllers
     public class CourseController : Controller
     {
         private readonly string _courseApiUrl;
+        private readonly string _resourceApiUrl;
         private readonly HttpClient _client;
 
         public CourseController()
@@ -19,15 +21,14 @@ namespace Client.Controllers
             _client.DefaultRequestHeaders.Accept.Add(contentType);
             var MyConfig = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             _courseApiUrl = MyConfig.GetValue<string>("AppSettings:courseApiUrl");
+            _resourceApiUrl = MyConfig.GetValue<string>("AppSettings:resourceApiUrl");
         }
         public async Task<IActionResult> Index()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-            var userName = User.FindFirstValue(ClaimTypes.Name); // will give the user's userName
-            var course = new Course()
-            {
-                TeacherId = userId,
-            };
+            var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var teacherEmail = User.FindFirstValue(ClaimTypes.Email); 
+            ViewData["teacherId"] = teacherId;
+            ViewData["teacherEmail"] = teacherEmail;
             HttpResponseMessage response = await _client.GetAsync(_courseApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
 
@@ -37,9 +38,9 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCourse()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId 
-            var courseOldName = Request.Form["courseOldName"];
-            var courseName = Request.Form["courseName"].FirstOrDefault();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var courseOldName = Request.Form["courseOldName"].ToString().Trim(); 
+            var courseName = Request.Form["courseName"].ToString().Trim(); 
             var courseCre = new Course()
             {
                 CourseName = courseName,
@@ -50,10 +51,80 @@ namespace Client.Controllers
             var x = await _client.PostAsJsonAsync(_courseApiUrl, courseCre);
             return RedirectToAction("Index");
         }
-        public IActionResult Detail()
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateCourse()
         {
-            return View();
+            var courseId = Request.Form["courseId"].ToString().Trim();
+            var courseName = Request.Form["courseName"].ToString().Trim();
+            var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var courseUd = new Course()
+            {
+                CourseId = Convert.ToInt32(courseId),
+                CourseName = courseName,
+                TeacherId = teacherId
+                
+            };
+
+            var content = JsonConvert.SerializeObject(courseUd);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PutAsync($"{_courseApiUrl}{courseId}", byteContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateResource()
+        {
+            var resourceId = Request.Form["resourceId"].ToString().Trim();
+            var resourceName = Request.Form["resourceName"].ToString().Trim();
+            var courseId = Convert.ToInt32(Request.Form["courseId"].ToString().Trim());
+            var resourceUd = new Resource()
+            {
+                ResourceId = Convert.ToInt32(resourceId),
+                ResourceName = resourceName,
+
+            };
+
+            var content = JsonConvert.SerializeObject(resourceUd);
+            var buffer = System.Text.Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PutAsync($"{_resourceApiUrl}{resourceId}", byteContent);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return RedirectToAction("Detail", new { id = courseId });
+        }
+
+        public async Task<IActionResult> Detail(int id)
+        {
+            if (id == 0) return View(new Course());
+            HttpResponseMessage rpPrd = await _client.GetAsync($"{_courseApiUrl}{id}");
+            string strDataPrd = await rpPrd.Content.ReadAsStringAsync();
+
+            var course = JsonConvert.DeserializeObject<Course>(strDataPrd);
+            return View(course);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateResource()
+        {
+            var folderName = Request.Form["folderName"].ToString().Trim();
+            var courseId = Convert.ToInt32(Request.Form["courseId"].ToString().Trim());
+            var rsCre = new Resource()
+            {
+                ResourceName = folderName,
+                CreateDate = DateTime.Now,
+                CourseId = courseId
+            };
+
+            var x = await _client.PostAsJsonAsync(_resourceApiUrl, rsCre);
+            return RedirectToAction("Detail", new {id = courseId});
+        }
+
         public IActionResult ViewStudent()
         {
             return View(@"~/Views/Student/Index.cshtml");

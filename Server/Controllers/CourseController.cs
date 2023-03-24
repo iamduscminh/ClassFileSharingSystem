@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects;
 using BusinessObjects.Entities;
+using Client.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Dto;
@@ -12,7 +13,7 @@ namespace Server.Controllers
     public class CourseController : Controller
     {
         private readonly ClassFileSharingContext _context;
-        IMapper _mapper;
+        private readonly IMapper _mapper;
         public CourseController(IMapper mapper, ClassFileSharingContext context)
         {
             _mapper = mapper;
@@ -22,8 +23,14 @@ namespace Server.Controllers
         [HttpGet]
         public IActionResult GetCourses()
         {
-            var courses = _context.Courses.ToList();
+            var courses = _context.Courses.Include(c=>c.Resources).Include(s=>s.Students).ToList();
             return Ok(courses);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetCourseDetail(int id)
+        {
+            var course = _context.Courses.Where(x=>x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
+            return Ok(course);
         }
 
         [HttpPost]
@@ -34,6 +41,18 @@ namespace Server.Controllers
             _context.SaveChanges();
             return Ok("Successfully created");
      
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult EditCourse(int id, [FromBody] CourseDto c)
+        {
+            var course = _context.Courses.FirstOrDefault(x=>x.CourseId == c.CourseId);
+            if (course == null) return NotFound();
+            course.CourseName = c.CourseName;
+
+            _context.SaveChanges();
+            return Ok("Successfully updated");
+
         }
     }
 }

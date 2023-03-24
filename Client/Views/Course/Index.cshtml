@@ -1,4 +1,5 @@
 ﻿@using BusinessObjects.Entities
+@using Client.Models
 @{
     ViewData["Title"] = "Course Page";
 }
@@ -7,7 +8,7 @@
 <div class="container mt-5 mb-3">
     <div class="card rounded-3">
         <div class="card-body">
-            <h4 class="card-title">Owner: </h4>
+            <h4 class="card-title">Owner: @ViewData["teacherEmail"]</h4>
             <p class="card-text"><strong>Number of Resource:</strong></p>
             <p class="card-text"><strong>Number of File:</strong></p>
             <button type="button"
@@ -21,34 +22,38 @@
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card p-3 mb-2">
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
-                        <div class="ms-2 c-details">
-                            <h6 class="mb-0">Mailchimp</h6> <span>40 students</span>
+        @foreach (Course c in Model)
+        {
+            <div class="col-md-3">
+                <div class="card p-3 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
+                            <div class="ms-2 c-details">
+                                <h6 class="mb-0">@(c.Teacher!=null ? c.Teacher.FullName : ViewData["teacherEmail"])</h6> <span>@c.Students.Count students</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="menu-nav">
-                        <div class="dropdown-container" tabindex="-1">
-                            <div class="three-dots"></div>
-                            <div class="dropdown">
-                                <a data-bs-toggle="modal" data-bs-target="#editCourseModal"><div>Edit Course</div></a>
-                                <a href="#"><div>Delete Course</div></a>
-                                <a href="#"><div>Student Manager</div></a>
+                        <div class="menu-nav">
+                            <div class="dropdown-container" tabindex="-1">
+                                <div class="three-dots"></div>
+                                <div class="dropdown">
+                                    <a data-bs-toggle="modal" data-bs-target="#editCourseModal" onClick="onUpdateCourse('@c.CourseId','@c.CourseName');"><div>Edit Course</div></a>
+                                    <a href="#"><div>Delete Course</div></a>
+                                    <a href="#"><div>Student Manager</div></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="mt-5">
-                    <h4 class="heading text-limit-3">(WDU203c) UI/UX Design_Thiết kế trải nghiệm người dùng</h4>
                     <div class="mt-5">
-                        <div class="mt-3"> <a href="#">Go to course</a> </div>
+                        <h4 class="heading text-limit-3">@c.CourseName</h4>
+                        <div class="mt-5">
+                            <div class="mt-3"> <a href="/Course/Detail/@c.CourseId">Go to course</a> </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+
 
 
     </div>
@@ -70,20 +75,17 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <form action="/Course/SaveCourse" method="post">
+            <form action="/Course/UpdateCourse" method="post">
+                 <input class="form-control" type="hidden" id="formCourseId" name="courseId" />
                 <div class="modal-body">
                     <div class="mb-3 d-flex">
-                        <label for="formFile" class="form-label">Current Name </label>
-                        <input class="form-control" type="text" id="formCourseName" name="courseOldName" />
-                    </div>
-                    <div class="mb-3 d-flex">
-                        <label for="formFile" class="form-label">New Name </label>
-                        <input class="form-control" type="text" id="formCourseName" name="courseName" />
+                        <label for="formFile" class="form-label">Course Name </label>
+                        <input class="form-control" type="text" id="formCourseOldName" name="courseName" />
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>
@@ -106,6 +108,7 @@
                         aria-label="Close"></button>
             </div>
             <form action="/Course/CreateCourse" method="post">
+                
                 <div class="modal-body">
                     <div class="mb-3 d-flex">
                         <label for="formFile" class="form-label">Course Name </label>
@@ -120,3 +123,6 @@
         </div>
     </div>
 </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/course.js"></script>
