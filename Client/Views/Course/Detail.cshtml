@@ -78,7 +78,7 @@
                             <td>
                                 <img src="https://img.icons8.com/color/100/000000/file.png"
                                  width="20" />
-                                <a href="#">@f.FileName</a>
+                                <a href="/File/DownloadFile?cloudId=@f.CloudId">@f.FileName</a>
                             </td>
                             <td>@f.CreateDate</td>
                             <td>
@@ -87,8 +87,8 @@
                                         <div class="three-dots"></div>
                                         <div class="dropdown">
                                             @*<a data-bs-toggle="modal" data-bs-target="#editFileModal" onClick="onUpdateFile('id','name');">Edit File Name</a>*@
-                                            <a href="#">Download File</a>
-                                            <a href="#">Delete File</a>
+                                            <a href="/File/DownloadFile?cloudId=@f.CloudId">Download File</a>
+                                            <a href="/File/DeleteFile?cloudId=@f.CloudId">Delete File</a>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +152,7 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <form asp-action="UploadFormFile" asp-controller="Course" method="POST" enctype="multipart/form-data">
+            <form asp-action="UploadFormFile" asp-controller="File" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Current Folder: </label>
