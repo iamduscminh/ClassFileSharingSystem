@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -6,6 +7,7 @@ using System.Security.Claims;
 
 namespace Client.Controllers
 {
+    [Authorize(Roles = "Teacher")]
     public class StudentController : Controller
     {
         private readonly string _studentApiUrl;
@@ -78,12 +80,35 @@ namespace Client.Controllers
             ViewData["teacherCourse"] = courses;
 
             var studentStr = Request.Form["adStudentSearch"].ToString().Trim();
-
+            if (string.IsNullOrEmpty(studentStr)) studentStr = "empty";
             HttpResponseMessage response = await _client.GetAsync($"{_studentApiUrl}GetStudentsSearch/{studentStr}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var students = JsonConvert.DeserializeObject<List<ApplicationUser>>(strData);
             return View(@"~/Views/Student/EditStudent.cshtml", students);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchStudentInCourse()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+            HttpResponseMessage rpCourse = await _client.GetAsync($"{_courseApiUrl}{userId}/{userRole}");
+            string strDataCourse = await rpCourse.Content.ReadAsStringAsync();
+
+            var courses = JsonConvert.DeserializeObject<List<Course>>(strDataCourse);
+            ViewData["userId"] = userId;
+            ViewData["teacherCourse"] = courses;
+
+            var studentStr = Request.Form["adStudentSearch"].ToString().Trim();
+            var courseId = Request.Form["adCourseSearch"].ToString().Trim();
+            if (string.IsNullOrEmpty(studentStr)) studentStr = "empty";
+            HttpResponseMessage response = await _client.GetAsync($"{_studentApiUrl}GetStudentsSearchInCourse/{studentStr}/{courseId}");
+            string strData = await response.Content.ReadAsStringAsync();
+
+            var students = JsonConvert.DeserializeObject<List<ApplicationUser>>(strData);
+            return View(@"~/Views/Student/Index.cshtml", students);
         }
     }
 }

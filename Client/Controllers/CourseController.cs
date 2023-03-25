@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Entities;
 using Client.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -8,6 +9,7 @@ using System.Security.Claims;
 
 namespace Client.Controllers
 {
+    [Authorize]
     public class CourseController : Controller
     {
         private readonly string _courseApiUrl;
@@ -28,9 +30,11 @@ namespace Client.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
             var userEmail = User.FindFirstValue(ClaimTypes.Email); 
             var role = User.FindFirstValue(ClaimTypes.Role); 
+
+            ViewData["role"] = role;
             ViewData["teacherId"] = userId;
             ViewData["teacherEmail"] = userEmail;
-            HttpResponseMessage response = await _client.GetAsync(_courseApiUrl);
+            HttpResponseMessage response = await _client.GetAsync($"{_courseApiUrl}{userId}/{role}");
             string strData = await response.Content.ReadAsStringAsync();
 
             var courses = JsonConvert.DeserializeObject<List<Course>>(strData);
@@ -40,11 +44,12 @@ namespace Client.Controllers
         public async Task<IActionResult> CreateCourse()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
-            var courseOldName = Request.Form["courseOldName"].ToString().Trim(); 
+            var courseCode = Request.Form["courseCode"].ToString().Trim(); 
             var courseName = Request.Form["courseName"].ToString().Trim(); 
             var courseCre = new Course()
             {
                 CourseName = courseName,
+                CourseCode = courseCode,
                 CreateDate = DateTime.Now,
                 TeacherId = userId
             };
@@ -58,11 +63,13 @@ namespace Client.Controllers
         {
             var courseId = Request.Form["courseId"].ToString().Trim();
             var courseName = Request.Form["courseName"].ToString().Trim();
+            var courseCode = Request.Form["courseCode"].ToString().Trim();
             var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var courseUd = new Course()
             {
                 CourseId = Convert.ToInt32(courseId),
                 CourseName = courseName,
+                CourseCode = courseCode,
                 TeacherId = teacherId
                 
             };
@@ -107,13 +114,19 @@ namespace Client.Controllers
             string strDataPrd = await rpPrd.Content.ReadAsStringAsync();
 
             var course = JsonConvert.DeserializeObject<Course>(strDataPrd);
-            if(rsId==0) rsId = course.Resources.FirstOrDefault().ResourceId;
-            HttpResponseMessage rs = await _client.GetAsync($"{_resourceApiUrl}{rsId}");
-            string strDataRs = await rs.Content.ReadAsStringAsync();
+            var role = User.FindFirstValue(ClaimTypes.Role);
+            ViewData["role"] = role;
+            if (course.Resources!=null && course.Resources.Any())
+            {
+                if (rsId == 0) rsId = course.Resources.FirstOrDefault().ResourceId;
+                HttpResponseMessage rs = await _client.GetAsync($"{_resourceApiUrl}{rsId}");
+                string strDataRs = await rs.Content.ReadAsStringAsync();
 
-            var resource = JsonConvert.DeserializeObject<Resource>(strDataRs);
-            ViewData["files"] = resource.Files;
-            course.Resources.FirstOrDefault().Files = resource.Files;
+                var resource = JsonConvert.DeserializeObject<Resource>(strDataRs);
+                ViewData["files"] = resource.Files;
+                course.Resources.FirstOrDefault().Files = resource.Files;
+            }
+            
             return View(course);
         }
 

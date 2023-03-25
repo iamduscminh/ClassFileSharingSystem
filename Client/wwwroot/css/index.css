@@ -6,7 +6,9 @@
     border: none;
     border-radius: 10px
 }
-
+.btn-course-dt a:hover{
+    color:white;
+}
 .c-details span {
     font-weight: 300;
     font-size: 13px

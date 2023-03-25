@@ -4,12 +4,12 @@
 <div class="section-account pt-95 pt-lg-75 pt-md-65 pt-sm-55 pt-xs-45">
     <div class="card shadow mb-4 mt-4" style="width: 100%;margin-top:32px;">
         <div style="margin-left:16px" class="d-flex">
-            <form method="post" action="/Student/SearchStudent" style="with:50%;">
+            <form method="post" action="/Student/SearchStudent" style="with:70%;">
                 <div class="mb-3 mt-4">
                     <input type="text" value="" placeholder="Enter email or student number wanna search" class="form-control" id="tb10" aria-describedby="emailHelp" name="adStudentSearch">
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
-                <a href="/Course">
+                <a class="btn btn-secondary" href="/Course">
                     Back to View
                 </a>
             </form>
@@ -28,7 +28,6 @@
                     </tr>
                 </thead>
                 <tbody>
-
                     @foreach (ApplicationUser u in Model)
                     {
                         <tr>
@@ -39,7 +38,6 @@
                             <td><a class="editCard" href="#"><strong>Add Student</strong></a></td>
                             <td><a class="addCard" href="/Student/DeleteStudent?id=@u.Id"><strong>Delete</strong></a></td>
                         </tr>
-
                     }
 
                 </tbody>

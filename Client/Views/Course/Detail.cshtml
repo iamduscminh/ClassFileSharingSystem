@@ -1,6 +1,10 @@
 ﻿@using BusinessObjects.Entities
 
 @model Course;
+@{
+    var listFile = (List<File>)ViewData["files"];
+    var role = ViewData["role"].ToString();
+}
 <link rel="stylesheet" href="~/css/course.css" />
 <div class="container row m-lg-5">
     <div class="card rounded-3">
@@ -8,59 +12,80 @@
             <h4 class="card-title">Course: @Model.CourseName</h4>
             <p class="card-text"><strong>Number of students: @Model.Students.Count</strong></p>
             <p class="card-text"><strong>Start date @Model.CreateDate</strong></p>
-            <a class="card-link" href="#">View list student</a>
+            @if (role == "Teacher")
+            {
+                <a class="card-link btn btn-outline-dark btn-rounded" href="/Student?courseId=@Model.CourseId">View list student</a>
+            }
         </div>
     </div>
     <div class="d-flex justify-content-center left-side col-md-4">
         <ul class="list-group mt-5 text-white">
-            <li class=" d-flex justify-content-between align-content-center">
-                <button type="button"
+            @if (role == "Teacher")
+            {
+                <li class=" d-flex justify-content-between align-content-center">
+                    <button type="button"
                         class="btn btn-outline-dark btn-rounded"
                         data-mdb-ripple-color="dark"
                         data-bs-toggle="modal"
                         data-bs-target="#createFolderModal"
                         style="width:100%">
-                    Create
-                </button>
-            </li>
-            @foreach (Resource r in Model.Resources)
+                        Create
+                    </button>
+                </li>
+            }
+
+            @if (Model.Resources.Any())
             {
-                <li class="list-group-item d-flex justify-content-between align-content-center">
-                    <a href="/Course/Detail?id=@Model.CourseId&rsId=@r.ResourceId">
-                        <div class="d-flex flex-row">
-                            <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
+                @foreach (Resource r in Model.Resources)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-content-center">
+                        <a href="/Course/Detail?id=@Model.CourseId&rsId=@r.ResourceId">
+                            <div class="d-flex flex-row">
+                                <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
                              width="40" />
-                            <div class="ml-2">
-                                <h6 class="mb-0">@r.ResourceName</h6>
-                                <div class="about">
-                                    <span>@(r.Files!=null ? r.Files.Count : 0) Files</span>
-                                    <span>@r.CreateDate</span>
+                                <div class="ml-2">
+                                    <h6 class="mb-0">@r.ResourceName</h6>
+                                    <div class="about">
+                                        <span>@(r.Files!=null ? r.Files.Count : 0) Files</span>
+                                        <span>@r.CreateDate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="menu-nav">
+                            <div class="dropdown-container" tabindex="-1">
+                                <div class="three-dots"></div>
+                                <div class="dropdown">
+                                    @if (role == "Teacher")
+                                    {
+                                        <a data-bs-toggle="modal" data-bs-target="#editFolderModal" onClick="onUpdateResource('@r.ResourceId','@r.ResourceName');"><div>Edit Resourse</div></a>
+                                        <a href="/Course/DeleteResource?id=@r.ResourceId"><div>Delete Resourse</div></a>
+                                    }
                                 </div>
                             </div>
                         </div>
-                    </a>
-                    <div class="menu-nav">
-                        <div class="dropdown-container" tabindex="-1">
-                            <div class="three-dots"></div>
-                            <div class="dropdown">
-                                <a data-bs-toggle="modal" data-bs-target="#editFolderModal" onClick="onUpdateResource('@r.ResourceId','@r.ResourceName');"><div>Edit Resourse</div></a>
-                                <a href="/Course/DeleteResource?id=@r.ResourceId"><div>Delete Resourse</div></a>
-                            </div>
-                        </div>
-                    </div>
 
-                </li>
+                    </li>
+                }
             }
+            else
+            {
+                <h6>Empty</h6>
+            }
+
         </ul>
     </div>
     <div class="right-side col-md-8">
         <div class="list-file mt-5">
-            <button type="button"
+            @if (role == "Teacher")
+            {
+                <button type="button"
                     class="btn btn-secondary"
                     data-bs-toggle="modal"
                     data-bs-target="#uploadFileModal">
-                Upload file
-            </button>
+                    Upload file
+                </button>
+            }
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -71,29 +96,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (File f in (List<File>)ViewData["files"])
+                    @if (listFile != null && listFile.Any())
                     {
-                        <tr>
-                            <th scope="row">@f.FileId</th>
-                            <td>
-                                <img src="https://img.icons8.com/color/100/000000/file.png"
+                        @foreach (File f in listFile)
+                        {
+                            <tr>
+                                <th scope="row">@f.FileId</th>
+                                <td>
+                                    <img src="https://img.icons8.com/color/100/000000/file.png"
                                  width="20" />
-                                <a href="/File/DownloadFile?cloudId=@f.CloudId">@f.FileName</a>
-                            </td>
-                            <td>@f.CreateDate</td>
-                            <td>
-                                <div class="menu-nav">
-                                    <div class="dropdown-container" tabindex="-1">
-                                        <div class="three-dots"></div>
-                                        <div class="dropdown">
-                                            @*<a data-bs-toggle="modal" data-bs-target="#editFileModal" onClick="onUpdateFile('id','name');">Edit File Name</a>*@
-                                            <a href="/File/DownloadFile?cloudId=@f.CloudId">Download File</a>
-                                            <a href="/File/DeleteFile?cloudId=@f.CloudId">Delete File</a>
+                                    <a href="/File/DownloadFile?cloudId=@f.CloudId">@f.FileName</a>
+                                </td>
+                                <td>@f.CreateDate</td>
+                                <td>
+                                    <div class="menu-nav">
+                                        <div class="dropdown-container" tabindex="-1">
+                                            <div class="three-dots"></div>
+                                            <div class="dropdown">
+                                                @*<a data-bs-toggle="modal" data-bs-target="#editFileModal" onClick="onUpdateFile('id','name');">Edit File Name</a>*@
+                                                <a href="/File/DownloadFile?cloudId=@f.CloudId">Download File</a>
+                                                @if (role == "Teacher")
+                                                {
+                                                    <a href="/File/DeleteFile?cloudId=@f.CloudId">Delete File</a>
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <h6>Khong co file</h6>
                     }
                 </tbody>
             </table>

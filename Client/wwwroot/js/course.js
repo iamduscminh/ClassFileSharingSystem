@@ -1,6 +1,8 @@
-﻿function onUpdateCourse(courseId, courseName) {
+﻿function onUpdateCourse(courseId, courseName, courseCode) {
     $('#formCourseId').val(courseId);
     $('#formCourseOldName').val(courseName);
+    $('#formCourseCode').val(courseCode);
+    console.log(courseCode);
 }
 
 function onUpdateResource(id, name) {
@@ -9,5 +11,5 @@ function onUpdateResource(id, name) {
 }
 
 function onUpdateFile(id, name) {
-    console.log($('#formFileName').val());
+   
 }

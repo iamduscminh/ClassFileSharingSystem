@@ -42,7 +42,7 @@ namespace Server.Controllers
                             join userRole in _context.UserRoles on stu.Id equals userRole.UserId
                             join role in _context.Roles on userRole.RoleId equals role.Id
                             where role.Name == "Student"
-                            &&(string.IsNullOrEmpty(strSearch) || stu.Email.ToLower().Contains(strSearch.ToLower()))
+                            &&(strSearch == "empty" || stu.Email.ToLower().Contains(strSearch.ToLower()))
                             select new ApplicationUser
                             {
                                 Id = stu.Id,
@@ -53,6 +53,36 @@ namespace Server.Controllers
                             }).ToList();
             return Ok(students);
         }
+
+        [Route("{strSearch}/{courseId}")]
+        [HttpGet]
+        public IActionResult GetStudentsSearchInCourse(string strSearch, int courseId)
+        {
+            var students = (from stu in _context.ApplicationUsers                          
+                            join userRole in _context.UserRoles on stu.Id equals userRole.UserId
+                            join role in _context.Roles on userRole.RoleId equals role.Id
+                            where role.Name == "Student"
+                            && (strSearch == "empty" || stu.Email.ToLower().Contains(strSearch.ToLower()))
+                            select new ApplicationUser
+                            {
+                                Id = stu.Id,
+                                UserName = stu.UserName,
+                                Email = stu.Email,
+                                StudentNumber = stu.StudentNumber,
+                                FullName = stu.FullName,
+                            }).ToList();
+            var studenIdInCourse = (from stuC in _context.StudentCourses
+                                    where stuC.Course.CourseId == courseId
+                                    select new ApplicationUser
+                                    {
+                                        Id = stuC.Student.Id
+                                    }).ToList();
+            students = students.Where(x => studenIdInCourse.Select(c => c.Id).Contains(x.Id)).ToList();
+
+            return Ok(students);
+        }
+
+
         [Route("{id}")]
         [HttpGet]
         public IActionResult GetStudentsByCourse(int id)

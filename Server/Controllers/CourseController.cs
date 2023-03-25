@@ -24,25 +24,53 @@ namespace Server.Controllers
         public IActionResult GetCourses()
         {
             var courses = _context.Courses
-                .Include(c=>c.Resources)
-                .Include(s=>s.Students)
+                .Include(c => c.Resources)
+                .Include(s => s.Students)
                 .ToList();
             return Ok(courses);
         }
         [HttpGet("{id}")]
         public IActionResult GetCourseDetail(int id)
         {
-            var course = _context.Courses.Where(x=>x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
+            var course = _context.Courses.Where(x => x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
             return Ok(course);
         }
         [Route("{userId}/{role}")]
         [HttpGet]
         public IActionResult GetCoursesByRole(string userId, string role)
         {
-            List<Course> courses;
-            if(role=="Teacher")
-             courses = _context.Courses.Where(x => x.TeacherId == userId).ToList();
-            else courses = _context.Courses.ToList();
+            List<Course> courses = new();
+            if (role == "Teacher")
+            {
+                courses = (from c in _context.Courses.Include(x=>x.Students)
+                           join t in _context.ApplicationUsers on c.TeacherId equals t.Id
+                           where c.TeacherId == userId
+                           select new Course
+                           {
+                               CourseId = c.CourseId,
+                               CourseName = c.CourseName,
+                               CourseCode = c.CourseCode,
+                               CreateDate = c.CreateDate,
+                               Teacher = t,
+                               Students = c.Students
+                           }).ToList();
+            }
+            else if (role == "Student")
+            {
+                var listCourseId = _context.StudentCourses.Where(x => x.Student.Id == userId).Select(c => c.Course.CourseId).ToList();
+                //courses = _context.Courses.Where(x=> listCourseId.Contains(x.CourseId)).ToList();
+                courses = (from c in _context.Courses
+                           join t in _context.ApplicationUsers on c.TeacherId equals t.Id
+                           where listCourseId.Contains(c.CourseId)
+                           select new Course
+                           {
+                               CourseId = c.CourseId,
+                               CourseName = c.CourseName,
+                               CourseCode = c.CourseCode,
+                               CreateDate = c.CreateDate,
+                               Teacher = t
+                           }).ToList();
+            }
 
             return Ok(courses);
         }
@@ -54,15 +82,16 @@ namespace Server.Controllers
             _context.Courses.Add(CourseMap);
             _context.SaveChanges();
             return Ok("Successfully created");
-     
+
         }
 
         [HttpPut("{id}")]
         public IActionResult EditCourse(int id, [FromBody] CourseDto c)
         {
-            var course = _context.Courses.FirstOrDefault(x=>x.CourseId == c.CourseId);
+            var course = _context.Courses.FirstOrDefault(x => x.CourseId == c.CourseId);
             if (course == null) return NotFound();
             course.CourseName = c.CourseName;
+            course.CourseCode = c.CourseCode;
 
             _context.SaveChanges();
             return Ok("Successfully updated");
