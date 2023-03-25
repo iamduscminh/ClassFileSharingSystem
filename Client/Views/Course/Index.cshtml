@@ -30,7 +30,9 @@
                         <div class="d-flex flex-row align-items-center">
                             <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
                             <div class="ms-2 c-details">
-                                <h6 class="mb-0">@(c.Teacher!=null ? c.Teacher.FullName : ViewData["teacherEmail"])</h6> <span>@c.Students.Count students</span>
+                                <h6 class="mb-0">@(c.Teacher!=null ? c.Teacher.FullName : ViewData["teacherEmail"])</h6> 
+                                <span><strong>Code:</strong> @c.CourseCode</span><br/>
+                                <span>@c.Students.Count students</span>
                             </div>
                         </div>
                         <div class="menu-nav">

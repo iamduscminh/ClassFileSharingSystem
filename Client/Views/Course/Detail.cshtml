@@ -8,7 +8,7 @@
     <div class="card rounded-3">
         <div class="card-body">
             <h4 class="card-title">Course: @Model.CourseName</h4>
-            <p class="card-text"><strong>Number of students: @Model.Students.Count</strong></p>
+            <p class="card-text"><strong>Number of students: @*@Model.Students.Count*@</strong></p>
             <p class="card-text"><strong>Start date @Model.CreateDate</strong></p>
             <a class="card-link" href="#">View list student</a>
         </div>
@@ -149,19 +149,23 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label for="formFile" class="form-label">Current Folder: </label>
-                    <input class="form-control" type="file" id="formFile" />
+            <form asp-action="UploadFormFile" asp-controller="Course" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Current Folder: </label>
+                        <input class="form-control" type="file" name="file"/>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button"
+                <div class="modal-footer">
+                    <button type="button"
                         class="btn btn-secondary"
                         data-bs-dismiss="modal">
                     Close
-                </button>
-            </div>
+                    </button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+            
         </div>
     </div>
 </div>

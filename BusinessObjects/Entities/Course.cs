@@ -13,9 +13,11 @@ namespace BusinessObjects.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CourseId { get; set; }
         [Required]
-        [StringLength(40)]
+        [StringLength(200)]
         public string CourseName { get; set; }
-
+        [Required]
+        [StringLength(40)]
+        public string CourseCode { get; set; }
         [ForeignKey("ApplicationUser")]
         public string TeacherId { get; set; }
         [NotMapped]

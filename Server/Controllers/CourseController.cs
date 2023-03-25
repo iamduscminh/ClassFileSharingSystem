@@ -32,6 +32,17 @@ namespace Server.Controllers
             var course = _context.Courses.Where(x=>x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
             return Ok(course);
         }
+        [Route("{userId}/{role}")]
+        [HttpGet]
+        public IActionResult GetCoursesByRole(string userId, string role)
+        {
+            List<Course> courses;
+            if(role=="Teacher")
+             courses = _context.Courses.Where(x => x.TeacherId == userId).ToList();
+            else courses = _context.Courses.ToList();
+
+            return Ok(courses);
+        }
 
         [HttpPost]
         public IActionResult CreateCourse([FromBody] CourseDto c)

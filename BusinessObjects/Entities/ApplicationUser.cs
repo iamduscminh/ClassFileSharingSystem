@@ -12,6 +12,6 @@ namespace BusinessObjects.Entities
     {
         public string FullName { get; set; } = null!;
         public virtual ICollection<Course> Courses { get; set; }
-
+        public string? StudentNumber { get; set; }
     }
 }

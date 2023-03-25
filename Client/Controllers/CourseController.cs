@@ -25,10 +25,11 @@ namespace Client.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var teacherId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
-            var teacherEmail = User.FindFirstValue(ClaimTypes.Email); 
-            ViewData["teacherId"] = teacherId;
-            ViewData["teacherEmail"] = teacherEmail;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var userEmail = User.FindFirstValue(ClaimTypes.Email); 
+            var role = User.FindFirstValue(ClaimTypes.Role); 
+            ViewData["teacherId"] = userId;
+            ViewData["teacherEmail"] = userEmail;
             HttpResponseMessage response = await _client.GetAsync(_courseApiUrl);
             string strData = await response.Content.ReadAsStringAsync();
 
@@ -132,6 +133,26 @@ namespace Client.Controllers
         public IActionResult AddStudent()
         {
             return View(@"~/Views/Student/AddStudent.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadFormFile(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var content = new MultipartFormDataContent();
+                content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+
+                var clientFile = new HttpClient();
+                var response = await clientFile.PostAsync("http://localhost:2507/api/FileManagement/UploadFile", content);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Redirect("~/Course/Detail");
+                }
+                return Redirect("~/Course/Detail");
+            }
+            return Redirect("~/Detail");
         }
     }
 }

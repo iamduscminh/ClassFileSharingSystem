@@ -1,0 +1,120 @@
+﻿@using BusinessObjects.Entities
+@model List<ApplicationUser>;
+<h1>Manage Student</h1>
+<div class="section-account pt-95 pt-lg-75 pt-md-65 pt-sm-55 pt-xs-45">
+    <div class="card shadow mb-4 mt-4" style="width: 100%;margin-top:32px;">
+        <div style="margin-left:16px" class="d-flex">
+            <form method="post" asp-page-handler="SearchUser" style="with:50%;">
+                <div class="mb-3 mt-4">
+                    <input type="text" value="" placeholder="Enter username wanna search in this class?" class="form-control" id="tb10" aria-describedby="emailHelp" name="adUserSearch">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="/Course">
+                    Back to View
+                </a>
+            </form>
+
+        </div>
+        <div class="card-body" id="cardBodyStudent">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">StudentNumber</th>
+                        <th scope="col">Add to Course</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (ApplicationUser u in Model)
+                    {
+                        <tr>
+                            <td>@u.Id</td>
+                            <td>@u.FullName</td>
+                            <td>@u.Email/td>
+                            <td>@u.StudentNumber</td>
+                            <td><a class="editCard" href="#"><strong>Add Student</strong></a></td>
+                            <td><a class="addCard" href="/Dashboard?Handler=Delete&id=u.Id"><strong>Delete</strong></a></td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" id="editStudentCard">
+        <div class="col-md-3 col-12 d-flex">
+        </div>
+        <div class="col-md-6 col-12 d-flex">
+            <div class="card shadow mb-4 mt-4" style="width: 100%;margin-top:32px;">
+
+                <div class="card-body" id="cardBody">
+                    <h3 class="text-">Add Student to Course</h3>
+                    <form id="addStudentForm" method="post">
+                        <input class="form-control" type="hidden" id="formTeacherId" value="@ViewData["userId"]" />
+                        <input class="form-control" type="hidden" id="formStudentId" />
+                        <div class="modal-body">
+                            <div class="mb-3 d-flex">
+                                <label for="formFile" class="form-label">Student Add </label>
+                                <input class="form-control" type="text" id="formStudentName" />
+                            </div>
+                            <div class="mb-3 d-flex">
+                                <label for="formFile" class="form-label">Select Course </label>
+                                <select id="formCourseId" class="form-select" aria-label="Default select example">
+                                    <option value="" selected>Select course to Add student</option>
+                                    @foreach (Course c in (List<Course>)ViewData["teacherCourse"])
+                                    {
+                                        <option value=@c.CourseId>@c.CourseName</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" id="btnAddCourse" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-12 d-flex">
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $("#cardBodyStudent .editCard").click(function() {
+        let studentId = $(this).parents("tr").find("td:nth-child(1)").text();
+        let studentName = $(this).parents("tr").find("td:nth-child(2)").text();
+        $('#formStudentId').val(studentId);
+        $('#formStudentName').val(studentName);
+
+        $('html, body').animate({
+            scrollTop: $("#editStudentCard").offset().top
+        }, 2000);
+    });
+
+    $("#btnAddCourse").click(function() {
+        let studentId = $('#formStudentId').val();
+        let courseId = $('#formCourseId').val();
+        console.log(courseId);
+       if ((studentId === null || studentId.trim() === "")
+            ||(courseId === null || courseId.trim() === "")) {
+            alert("you must choose student, course wanna to add !");
+            return;
+        }
+        console.log('check');
+
+
+        $('html, body').animate({
+            scrollTop: $("#editStudentCard").offset().top
+        }, 2000);
+    });
+</script>
