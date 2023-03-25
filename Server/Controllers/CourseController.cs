@@ -23,7 +23,10 @@ namespace Server.Controllers
         [HttpGet]
         public IActionResult GetCourses()
         {
-            var courses = _context.Courses.Include(c=>c.Resources).Include(s=>s.Students).ToList();
+            var courses = _context.Courses
+                .Include(c=>c.Resources)
+                .Include(s=>s.Students)
+                .ToList();
             return Ok(courses);
         }
         [HttpGet("{id}")]

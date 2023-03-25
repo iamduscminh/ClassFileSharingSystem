@@ -100,13 +100,20 @@ namespace Client.Controllers
             return RedirectToAction("Detail", new { id = courseId });
         }
 
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(int id, int rsId = 0)
         {
             if (id == 0) return View(new Course());
             HttpResponseMessage rpPrd = await _client.GetAsync($"{_courseApiUrl}{id}");
             string strDataPrd = await rpPrd.Content.ReadAsStringAsync();
 
             var course = JsonConvert.DeserializeObject<Course>(strDataPrd);
+            if(rsId==0) rsId = course.Resources.FirstOrDefault().ResourceId;
+            HttpResponseMessage rs = await _client.GetAsync($"{_resourceApiUrl}{rsId}");
+            string strDataRs = await rs.Content.ReadAsStringAsync();
+
+            var resource = JsonConvert.DeserializeObject<Resource>(strDataRs);
+            ViewData["files"] = resource.Files;
+            course.Resources.FirstOrDefault().Files = resource.Files;
             return View(course);
         }
 
@@ -139,11 +146,11 @@ namespace Client.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 if (!response.IsSuccessStatusCode)
                 {
-                    return Redirect("~/Course/Detail");
+                    return Redirect("~/Course");
                 }
-                return Redirect("~/Course/Detail");
+                return Redirect("~/Course");
             }
-            return Redirect("~/Course/Detail");
+            return Redirect("~/Course");
         }
     }
 }

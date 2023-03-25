@@ -1,7 +1,5 @@
 ﻿@using BusinessObjects.Entities
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+
 @model Course;
 <link rel="stylesheet" href="~/css/course.css" />
 <div class="container row m-lg-5">
@@ -28,17 +26,19 @@
             @foreach (Resource r in Model.Resources)
             {
                 <li class="list-group-item d-flex justify-content-between align-content-center">
-                    <div class="d-flex flex-row">
-                        <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
-                         width="40" />
-                        <div class="ml-2">
-                            <h6 class="mb-0">@r.ResourceName</h6>
-                            <div class="about">
-                                <span>@(r.Files!=null ? r.Files.Count : 0) Files</span>
-                                <span>@r.CreateDate</span>
+                    <a href="/Course/Detail?id=@Model.CourseId&rsId=@r.ResourceId">
+                        <div class="d-flex flex-row">
+                            <img src="https://img.icons8.com/color/100/000000/folder-invoices.png"
+                             width="40" />
+                            <div class="ml-2">
+                                <h6 class="mb-0">@r.ResourceName</h6>
+                                <div class="about">
+                                    <span>@(r.Files!=null ? r.Files.Count : 0) Files</span>
+                                    <span>@r.CreateDate</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     <div class="menu-nav">
                         <div class="dropdown-container" tabindex="-1">
                             <div class="three-dots"></div>
@@ -48,6 +48,7 @@
                             </div>
                         </div>
                     </div>
+
                 </li>
             }
         </ul>
@@ -70,28 +71,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>
-                            <img src="https://img.icons8.com/color/100/000000/file.png"
+                    @foreach (File f in (List<File>)ViewData["files"])
+                    {
+                        <tr>
+                            <th scope="row">@f.FileId</th>
+                            <td>
+                                <img src="https://img.icons8.com/color/100/000000/file.png"
                                  width="20" />
-                            <a href="#">note.txt</a>
-                        </td>
-                        <td>Feb 8 2022</td>
-                        <td>
-                            <div class="menu-nav">
-                                <div class="dropdown-container" tabindex="-1">
-                                    <div class="three-dots"></div>
-                                    <div class="dropdown">
-                                        <a data-bs-toggle="modal" data-bs-target="#editFileModal" onClick="onUpdateFile('id','name');">Edit File Name</a>
-                                        <a href="#">Download File</a>
-                                        <a href="#">Delete File</a>
+                                <a href="#">@f.FileName</a>
+                            </td>
+                            <td>@f.CreateDate</td>
+                            <td>
+                                <div class="menu-nav">
+                                    <div class="dropdown-container" tabindex="-1">
+                                        <div class="three-dots"></div>
+                                        <div class="dropdown">
+                                            @*<a data-bs-toggle="modal" data-bs-target="#editFileModal" onClick="onUpdateFile('id','name');">Edit File Name</a>*@
+                                            <a href="#">Download File</a>
+                                            <a href="#">Delete File</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -153,19 +156,19 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Current Folder: </label>
-                        <input class="form-control" type="file" name="file"/>
+                        <input class="form-control" type="file" name="file" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
-                    Close
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
                     </button>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
-            
+
         </div>
     </div>
 </div>

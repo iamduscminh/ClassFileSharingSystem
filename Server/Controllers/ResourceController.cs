@@ -18,6 +18,14 @@ namespace Server.Controllers
             _mapper = mapper;
             _context = context;
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetResourceDetail(int id)
+        {
+            var course = _context.Resourses.Where(x => x.ResourceId == id).Include(c => c.Files).FirstOrDefault();
+            return Ok(course);
+        }
+
         [HttpPost]
         public IActionResult CreateResource([FromBody] ResourceDto r)
         {
