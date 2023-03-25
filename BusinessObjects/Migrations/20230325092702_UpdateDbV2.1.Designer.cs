@@ -4,6 +4,7 @@ using BusinessObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObjects.Migrations
 {
     [DbContext(typeof(ClassFileSharingContext))]
-    partial class ClassFileSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20230325092702_UpdateDbV2.1")]
+    partial class UpdateDbV21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,33 +185,6 @@ namespace BusinessObjects.Migrations
                     b.ToTable("Resourses");
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.StudentCourse", b =>
-                {
-                    b.Property<int>("StudentCourseId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentCourseId"), 1L, 1);
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StudentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("StudentCourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentCourses");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -363,25 +338,6 @@ namespace BusinessObjects.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BusinessObjects.Entities.StudentCourse", b =>
-                {
-                    b.HasOne("BusinessObjects.Entities.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusinessObjects.Entities.ApplicationUser", "Student")
-                        .WithMany("CourseOwnerShips")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -431,11 +387,6 @@ namespace BusinessObjects.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BusinessObjects.Entities.ApplicationUser", b =>
-                {
-                    b.Navigation("CourseOwnerShips");
                 });
 
             modelBuilder.Entity("BusinessObjects.Entities.Course", b =>

@@ -28,6 +28,7 @@ namespace BusinessObjects
         public virtual DbSet<Course> Courses { get; set; } = null!;
         public virtual DbSet<Resource> Resourses { get; set; } = null!;
         public virtual DbSet<BusinessObjects.Entities.File> Files { get; set; } = null!;
+        public virtual DbSet<StudentCourse> StudentCourses { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

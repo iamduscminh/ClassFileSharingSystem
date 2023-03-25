@@ -25,7 +25,11 @@ builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 
 var app = builder.Build();
-
+app.UseCors(x => x
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials()
+           .SetIsOriginAllowed(origin => true));// Allow any origin 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

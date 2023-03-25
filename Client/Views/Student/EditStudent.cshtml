@@ -4,9 +4,9 @@
 <div class="section-account pt-95 pt-lg-75 pt-md-65 pt-sm-55 pt-xs-45">
     <div class="card shadow mb-4 mt-4" style="width: 100%;margin-top:32px;">
         <div style="margin-left:16px" class="d-flex">
-            <form method="post" asp-page-handler="SearchUser" style="with:50%;">
+            <form method="post" action="/Student/SearchStudent" style="with:50%;">
                 <div class="mb-3 mt-4">
-                    <input type="text" value="" placeholder="Enter username wanna search in this class?" class="form-control" id="tb10" aria-describedby="emailHelp" name="adUserSearch">
+                    <input type="text" value="" placeholder="Enter email or student number wanna search" class="form-control" id="tb10" aria-describedby="emailHelp" name="adStudentSearch">
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
                 <a href="/Course">
@@ -37,7 +37,7 @@
                             <td>@u.Email/td>
                             <td>@u.StudentNumber</td>
                             <td><a class="editCard" href="#"><strong>Add Student</strong></a></td>
-                            <td><a class="addCard" href="/Dashboard?Handler=Delete&id=u.Id"><strong>Delete</strong></a></td>
+                            <td><a class="addCard" href="/Student/DeleteStudent?id=@u.Id"><strong>Delete</strong></a></td>
                         </tr>
 
                     }
@@ -110,11 +110,17 @@
             alert("you must choose student, course wanna to add !");
             return;
         }
-        console.log('check');
+    $.ajax({
+      url: `https://localhost:7181/api/Student/AddStudentCourse/${studentId}/${courseId}`,
+      type: "POST",
+      contentType: "application/json",
+      success: alert('add successfully!'),
+      error: alert('add fail!'),
+    });
 
 
         $('html, body').animate({
             scrollTop: $("#editStudentCard").offset().top
-        }, 2000);
+        }, 500);
     });
 </script>

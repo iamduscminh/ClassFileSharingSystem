@@ -126,22 +126,13 @@ namespace Client.Controllers
             return RedirectToAction("Detail", new {id = courseId});
         }
 
-        public IActionResult ViewStudent()
-        {
-            return View(@"~/Views/Student/Index.cshtml");
-        }
-        public IActionResult AddStudent()
-        {
-            return View(@"~/Views/Student/AddStudent.cshtml");
-        }
-
         [HttpPost]
         public async Task<IActionResult> UploadFormFile(IFormFile file)
         {
             if (file != null && file.Length > 0)
             {
                 var content = new MultipartFormDataContent();
-                content.Add(new StreamContent(file.OpenReadStream()), "file", file.FileName);
+                content.Add(new StreamContent(file.OpenReadStream()), "formFile", file.FileName);
 
                 var clientFile = new HttpClient();
                 var response = await clientFile.PostAsync("http://localhost:2507/api/FileManagement/UploadFile", content);
@@ -152,7 +143,7 @@ namespace Client.Controllers
                 }
                 return Redirect("~/Course/Detail");
             }
-            return Redirect("~/Detail");
+            return Redirect("~/Course/Detail");
         }
     }
 }

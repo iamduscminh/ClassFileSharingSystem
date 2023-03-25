@@ -1,15 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using BusinessObjects.Entities
+@model List<ApplicationUser>;
 <h1>Student List</h1>
 <div class="section-account pt-95 pt-lg-75 pt-md-65 pt-sm-55 pt-xs-45">
     <div class="card shadow mb-4 mt-4" style="width: 100%;margin-top:32px;">
         <div style="margin-left:16px" class="d-flex">
-            <form method="post" asp-page-handler="SearchUser" style="with:50%;">
+             <form method="post" action="/Student/SearchStudent" style="with:50%;">
                 <div class="mb-3 mt-4">
-                    <input type="text" value="" placeholder="Enter username wanna search in this class?" class="form-control" id="tb10" aria-describedby="emailHelp" name="adUserSearch">
+                    <input type="text" value="" placeholder="Enter email or student number wanna search" class="form-control" id="tb10" aria-describedby="emailHelp" name="adStudentSearch">
                 </div>
                 <button type="submit" class="btn btn-primary">Search</button>
                 <button type="button"
@@ -19,7 +16,11 @@
                         data-bs-target="#addStudentModal">
                     Add Student
                 </button>
+                <a href="/Course">
+                    Back to Course
+                </a>
             </form>
+            
 
         </div>
         <div class="card-body" id="cardBody">
@@ -30,18 +31,20 @@
                         <th scope="col">Student Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">StudentNumber</th>
-                        <th scope="col"></th>
+                        <th scope="col">Remove</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>u.Id</td>
-                        <td>u.Username</td>
-                        <td>u.Password</td>
-                        <td>u.Cash</td>
-                        <td>u.Cash</td>
-                        <td><a class="addCard" href="/Dashboard?Handler=Delete&id=u.Id"><strong>Delete</strong></a></td>
-                    </tr>
+                    @foreach (ApplicationUser u in Model)
+                    {
+                        <tr>
+                            <td>@u.Id</td>
+                            <td>@u.FullName</td>
+                            <td>@u.Email/td>
+                            <td>@u.StudentNumber</td>
+                            <td><a class="addCard" href="/Student/RemoveStudent?studentId=@u.Id&courseId=@ViewData["courseId"]"><strong>Remove</strong></a></td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

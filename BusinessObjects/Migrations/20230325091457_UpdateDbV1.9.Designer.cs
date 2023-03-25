@@ -4,6 +4,7 @@ using BusinessObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObjects.Migrations
 {
     [DbContext(typeof(ClassFileSharingContext))]
-    partial class ClassFileSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20230325091457_UpdateDbV1.9")]
+    partial class UpdateDbV19
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,12 +196,18 @@ namespace BusinessObjects.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CourseIdRef")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("StudentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StudentIdRef")
+                        .HasColumnType("int");
 
                     b.HasKey("StudentCourseId");
 
@@ -366,7 +374,7 @@ namespace BusinessObjects.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.StudentCourse", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Course", "Course")
-                        .WithMany()
+                        .WithMany("OwnerShips")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -440,6 +448,8 @@ namespace BusinessObjects.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Course", b =>
                 {
+                    b.Navigation("OwnerShips");
+
                     b.Navigation("Resources");
                 });
 

@@ -4,6 +4,7 @@ using BusinessObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusinessObjects.Migrations
 {
     [DbContext(typeof(ClassFileSharingContext))]
-    partial class ClassFileSharingContextModelSnapshot : ModelSnapshot
+    [Migration("20230325091305_UpdateDbV1.8")]
+    partial class UpdateDbV18
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,7 +199,10 @@ namespace BusinessObjects.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("StudentId")
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentId1")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -205,7 +210,7 @@ namespace BusinessObjects.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId1");
 
                     b.ToTable("StudentCourses");
                 });
@@ -366,14 +371,14 @@ namespace BusinessObjects.Migrations
             modelBuilder.Entity("BusinessObjects.Entities.StudentCourse", b =>
                 {
                     b.HasOne("BusinessObjects.Entities.Course", "Course")
-                        .WithMany()
+                        .WithMany("OwnerShips")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BusinessObjects.Entities.ApplicationUser", "Student")
                         .WithMany("CourseOwnerShips")
-                        .HasForeignKey("StudentId")
+                        .HasForeignKey("StudentId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -440,6 +445,8 @@ namespace BusinessObjects.Migrations
 
             modelBuilder.Entity("BusinessObjects.Entities.Course", b =>
                 {
+                    b.Navigation("OwnerShips");
+
                     b.Navigation("Resources");
                 });
 

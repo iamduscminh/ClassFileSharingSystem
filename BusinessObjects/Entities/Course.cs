@@ -24,7 +24,7 @@ namespace BusinessObjects.Entities
         public ApplicationUser Teacher { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public virtual ICollection<ApplicationUser> Students { get; set; }
+        public virtual ICollection<StudentCourse> Students { get; set; }
         public virtual ICollection<Resource> Resources { get; set; }
 
 
