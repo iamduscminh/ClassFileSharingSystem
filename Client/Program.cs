@@ -86,23 +86,23 @@ async Task CreateRoles(IServiceProvider serviceProvider)
     }
 
     //create default admin user
-    var adminUser = new ApplicationUser
-    {
-        UserName = config.GetValue<string>("DefaultUser:adminUsername"),
-        Email = config.GetValue<string>("DefaultUser:adminEmail"),
-    };
-    string userAdminPWD = config.GetValue<string>("DefaultUser:adminPassword");
-    var _userAd = await UserManager.FindByEmailAsync(config.GetValue<string>("DefaultUser:adminEmail"));
+    //var adminUser = new ApplicationUser
+    //{
+    //    UserName = config.GetValue<string>("DefaultUser:adminUsername"),
+    //    Email = config.GetValue<string>("DefaultUser:adminEmail"),
+    //};
+    //string userAdminPWD = config.GetValue<string>("DefaultUser:adminPassword");
+    //var _userAd = await UserManager.FindByEmailAsync(config.GetValue<string>("DefaultUser:adminEmail"));
 
-    if (_userAd == null)
-    {
-        var createPowerUser = await UserManager.CreateAsync(adminUser, userAdminPWD);
-        if (createPowerUser.Succeeded)
-        {
-            //here we tie the new user to the role
-            await UserManager.AddToRoleAsync(adminUser, "Admin");
-        }
-    }
+    //if (_userAd == null)
+    //{
+    //    var createPowerUser = await UserManager.CreateAsync(adminUser, userAdminPWD);
+    //    if (createPowerUser.Succeeded)
+    //    {
+    //        //here we tie the new user to the role
+    //        await UserManager.AddToRoleAsync(adminUser, "Admin");
+    //    }
+    //}
 
     //create default teacher user
     var teacherUser = new ApplicationUser

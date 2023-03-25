@@ -52,7 +52,7 @@ namespace GoogleDriveAPIManagement
         }
 
         [HttpGet("{fileId}")]
-        public async Task<ActionResult<FileResult>> DownloadFile(string fileId)
+        public async Task<IActionResult> DownloadFile(string fileId)
         {
             var service = DriveServiceConnection.DriveServiceConnection.GetConnectionInstance();
             Google.Apis.Drive.v3.Data.File file = service.Files.Get(fileId).Execute();
@@ -61,7 +61,6 @@ namespace GoogleDriveAPIManagement
             using (var stream = new MemoryStream())
             {
                 await request.DownloadAsync(stream);
-
                 // Create a new FileStreamResult with the file's content and metadata.
                 var fileStreamResult = new FileStreamResult(new MemoryStream(stream.ToArray()), file.MimeType)
                 {
