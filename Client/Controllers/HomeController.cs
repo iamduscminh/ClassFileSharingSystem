@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductIdentityClient.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Client.Controllers
 {
@@ -15,6 +16,8 @@ namespace Client.Controllers
 
         public IActionResult Index()
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(!string.IsNullOrEmpty(userId)) return RedirectToAction("Index", "Course");
             return View();
         }
 

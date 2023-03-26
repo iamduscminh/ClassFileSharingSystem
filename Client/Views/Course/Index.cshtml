@@ -9,9 +9,10 @@
 <div class="container mt-5 mb-3">
     <div class="card rounded-3">
         <div class="card-body">
-            <h4 class="card-title">Owner: @ViewData["teacherEmail"]</h4>
+           
             @if (role == "Teacher")
             {
+                <h4 class="card-title">Owner: @ViewData["teacherEmail"]</h4>
                 <button type="button"
                     class="btn btn-outline-dark btn-rounded"
                     data-mdb-ripple-color="dark"
@@ -19,6 +20,18 @@
                     data-bs-target="#createCourseModal"
                     style="width:20%">
                     Create Course
+                </button>
+            }
+            else
+            {
+                <h4 class="card-title">Courses of: @ViewData["teacherEmail"]</h4>
+                 <button type="button"
+                    class="btn btn-outline-dark btn-rounded"
+                    data-mdb-ripple-color="dark"
+                    data-bs-toggle="modal"
+                    data-bs-target="#joinCourseModal"
+                    style="width:20%">
+                    Join Another Course
                 </button>
             }
 
@@ -50,6 +63,8 @@
                                         <a data-bs-toggle="modal" data-bs-target="#editCourseModal" onClick="onUpdateCourse('@c.CourseId','@c.CourseName', '@c.CourseCode');"><div>Edit Course</div></a>
                                         <a href="#"><div>Delete Course</div></a>
                                         <a href="/Student?courseId=@c.CourseId"><div>Student Manager</div></a>
+                                    }else{
+                                         <a href="/Course/OutCourse?courseId=@c.CourseId"><div>Out this course</div></a>
                                     }
                                 </div>
                             </div>
@@ -130,9 +145,36 @@
                         <label for="formFile" class="form-label">Course Name </label>
                         <input class="form-control" type="text" id="formCourseName" name="courseName" />
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal join Course-->
+<div class="modal fade"
+     id="joinCourseModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Join a Course</h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form action="/Course/JoinCourse" method="post">
+
+                <div class="modal-body">
                     <div class="mb-3 d-flex">
                         <label for="formFile" class="form-label">Course Code </label>
-                        <input class="form-control" type="text" id="formCourseName" name="courseCode" />
+                        <input class="form-control" type="text" id="formCourseCode" name="courseCode" />
                     </div>
                 </div>
                 <div class="modal-footer">

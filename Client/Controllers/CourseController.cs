@@ -43,8 +43,8 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCourse()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
-            var courseCode = Request.Form["courseCode"].ToString().Trim(); 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var courseCode = Guid.NewGuid().ToString();
             var courseName = Request.Form["courseName"].ToString().Trim(); 
             var courseCre = new Course()
             {

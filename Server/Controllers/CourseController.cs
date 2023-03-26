@@ -97,5 +97,38 @@ namespace Server.Controllers
             return Ok("Successfully updated");
 
         }
+
+        [Route("{studentId}/{courseCode}")]
+        [HttpPost]
+        public IActionResult JoinCourse(string studentId, string courseCode)
+        {
+            var student = _context.ApplicationUsers.FirstOrDefault(x => x.Id == studentId);
+            var course = _context.Courses.FirstOrDefault(x => x.CourseCode == courseCode);
+            if (student == null || course == null) return NotFound();
+            var stdCourseCheck = _context.StudentCourses.Where(x => x.Course.CourseId == course.CourseId && x.Student.Id == studentId).FirstOrDefault();
+            if (stdCourseCheck != null) return BadRequest();
+            var studentCourse = new StudentCourse()
+            {
+                Student = student,
+                Course = course,
+                CreateDate = DateTime.Now,
+            };
+            _context.StudentCourses.Add(studentCourse);
+            _context.SaveChanges();
+            return Ok("Successfully created");
+        }
+        [Route("[action]/{studentId}/{courseId}")]
+        [HttpPost]
+        public IActionResult OutCourse(string studentId, string courseId)
+        {
+            var student = _context.ApplicationUsers.FirstOrDefault(x => x.Id == studentId);
+            var courId = Convert.ToInt32(courseId);
+            var course = _context.Courses.FirstOrDefault(x => x.CourseId == courId);
+            var stdCourseCheck = _context.StudentCourses.Where(x => x.Course.CourseId == courId && x.Student.Id == studentId).FirstOrDefault();
+            if (student == null || course == null || stdCourseCheck ==null) return NotFound();
+            _context.StudentCourses.Remove(stdCourseCheck);
+            _context.SaveChanges();
+            return Ok("Successfully created");
+        }
     }
 }
