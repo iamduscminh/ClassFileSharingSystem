@@ -124,6 +124,7 @@ namespace Client.Controllers
 
                 var resource = JsonConvert.DeserializeObject<Resource>(strDataRs);
                 ViewData["files"] = resource.Files;
+                ViewData["rsId"] = rsId;
                 course.Resources.FirstOrDefault().Files = resource.Files;
             }
             

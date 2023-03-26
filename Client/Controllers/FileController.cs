@@ -28,6 +28,8 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFormFile(IFormFile file)
         {
+            var courseId = TempData["courseId"].ToString();
+            var rsId = TempData["rsId"].ToString();
             if (file != null && file.Length > 0)
             {
                 var content = new MultipartFormDataContent();
@@ -39,7 +41,8 @@ namespace Client.Controllers
                 if (!response.IsSuccessStatusCode)
                 {
                     //Upload thất bại
-                    return Redirect("~/Course/Detail");
+                    TempData["message"] = "Có lỗi xảy ra, vui lòng thử lại sau";
+                    return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }
                 //Upload Thành công - Lưu vào DB
 
@@ -47,30 +50,34 @@ namespace Client.Controllers
                 fileEntity.CloudId = cloudId;
                 fileEntity.FileName = file.FileName;
                 fileEntity.CreateDate = DateTime.Now;
-                fileEntity.ResourceId = 1;
+                fileEntity.ResourceId = Convert.ToInt32(rsId);
                 try
                 {
                     //UploadDB Thành công
                     HttpResponseMessage appResponse = await appClient.PostAsJsonAsync(_fileApiUrl, fileEntity);
-                    return Redirect("~/Course/Detail");
+                    TempData["message"] = "Upload Tài liệu thành công";
+                    return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }
                 catch (Exception ex)
                 {
                     //Upload Thất bại
-                    return Redirect("~/Course/Detail");
+                    TempData["message"] = "Có lỗi xảy ra, vui lòng thử lại sau";
+                    return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }
             }
-            return Redirect("~/Course/Detail");
+            TempData["message"] = "Vui lòng chọn Tài liệu để Upload";
+            return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
         }
 
-        public async Task<IActionResult> DeleteFile(string cloudId)
+        public async Task<IActionResult> DeleteFile(string cloudId, int courseId, int rsId)
         {
             var response = await driveClient.DeleteAsync(_driveAPIUrl + $"/DeleteFile/{cloudId}");
             var responseContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
                 //Xóa thất bại trên Cloud
-                return Redirect("~/Course/Detail");
+                TempData["message"] = "Có lỗi xảy ra, vui lòng thử lại sau";
+                return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
             }
             else
             {
@@ -80,16 +87,18 @@ namespace Client.Controllers
                 if (!appResponse.IsSuccessStatusCode)
                 {
                     //Xóa DB Thất bại
-                    return Redirect("~/Course/Detail");
+                    TempData["message"] = "Có lỗi xảy ra, vui lòng thử lại sau";
+                    return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }
                 else
                 {
-                    return Redirect("~/Course/Detail");
+                    TempData["message"] = "Xóa Tài liệu thành công";
+                    return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }
             }
         }
 
-        public async Task<IActionResult> DownloadFile(string cloudId)
+        public async Task<IActionResult> DownloadFile(string cloudId, int courseId, int rsId)
         {
             var client = new HttpClient();
             var response = await client.GetAsync(_driveAPIUrl + $"/DownloadFile/{cloudId}");
@@ -105,7 +114,8 @@ namespace Client.Controllers
             }
             else
             {
-                return Redirect("~/Course/Detail");
+                TempData["message"] = "Có lỗi xảy ra, vui lòng thử lại sau";
+                return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
             }
         }
     }
