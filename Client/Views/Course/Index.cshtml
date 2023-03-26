@@ -44,7 +44,7 @@
                 <div class="card p-3 mb-2">
                     <div class="d-flex justify-content-between">
                         <div class="d-flex flex-row align-items-center">
-                            <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
+                            <div class="icon"><img style="width:100%; border-radius: 50%" src="~/img/teacher.jpg"/></div>
                             <div class="ms-2 c-details">
                                 <h6 class="mb-0">@(c.Teacher!=null ? c.Teacher.Email : ViewData["teacherEmail"])</h6>
                                 <span><strong>Code:</strong> @c.CourseCode</span><br />
@@ -61,7 +61,7 @@
                                     @if (role == "Teacher")
                                     {
                                         <a data-bs-toggle="modal" data-bs-target="#editCourseModal" onClick="onUpdateCourse('@c.CourseId','@c.CourseName', '@c.CourseCode');"><div>Edit Course</div></a>
-                                        <a href="#"><div>Delete Course</div></a>
+                                        <a href="/Course/DeleteCourse?courseId=@c.CourseId"><div>Delete Course</div></a>
                                         <a href="/Student?courseId=@c.CourseId"><div>Student Manager</div></a>
                                     }else{
                                          <a href="/Course/OutCourse?courseId=@c.CourseId"><div>Out this course</div></a>

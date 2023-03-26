@@ -59,7 +59,7 @@
                                     @if (role == "Teacher")
                                     {
                                         <a data-bs-toggle="modal" data-bs-target="#editFolderModal" onClick="onUpdateResource('@r.ResourceId','@r.ResourceName');"><div>Edit Resourse</div></a>
-                                        <a href="/Course/DeleteResource?id=@r.ResourceId"><div>Delete Resourse</div></a>
+                                        <a href="/Course/DeleteResource?courseId=@Model.CourseId&resourceId=@r.ResourceId"><div>Delete Resourse</div></a>
                                     }
                                 </div>
                             </div>
@@ -193,6 +193,8 @@
             </div>
             <form asp-action="UploadFormFile" asp-controller="File" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
+                    <input class="form-control" type="hidden" id="formCourseId" name="courseId" value="@Model.CourseId" />
+                    <input class="form-control" type="hidden" id="formResourceId" name="rsId" value="@ViewBag.rsId"/>
                     <div class="mb-3">
                         <label for="formFile" class="form-label">Current Folder: </label>
                         <input class="form-control" type="file" name="file" />
@@ -207,8 +209,6 @@
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
-            @TempData["courseId"] =@Model.CourseId;
-            @TempData["rsId"] = @ViewBag.rsId;
         </div>
     </div>
 </div>

@@ -35,6 +35,29 @@ namespace Server.Controllers
             var course = _context.Courses.Where(x => x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
             return Ok(course);
         }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCourse(int id)
+        {
+            var course = _context.Courses.Where(x => x.CourseId == id).Include(c => c.Resources).Include(s => s.Students).FirstOrDefault();
+            if(course==null) return NotFound();
+
+            //Remove student enroll
+            var stdCourse = _context.StudentCourses.Where(x => x.Course.CourseId == course.CourseId).ToList();
+            stdCourse.ForEach(x => _context.Remove(x));
+            _context.SaveChanges();
+
+            //Remove resource
+            var rsList = _context.Resourses.Where(x => x.CourseId == course.CourseId).ToList();
+            rsList.ForEach(x => _context.Remove(x));
+            _context.SaveChanges();
+
+            //Remove Course
+            _context.Remove(course);
+            _context.SaveChanges();
+
+            return Ok("Successfully Deleted");
+        }
+
         [Route("{userId}/{role}")]
         [HttpGet]
         public IActionResult GetCoursesByRole(string userId, string role)
@@ -42,7 +65,7 @@ namespace Server.Controllers
             List<Course> courses = new();
             if (role == "Teacher")
             {
-                courses = (from c in _context.Courses.Include(x=>x.Students)
+                courses = (from c in _context.Courses.Include(x=>x.Students).Include(r=>r.Resources)
                            join t in _context.ApplicationUsers on c.TeacherId equals t.Id
                            where c.TeacherId == userId
                            select new Course
@@ -52,7 +75,8 @@ namespace Server.Controllers
                                CourseCode = c.CourseCode,
                                CreateDate = c.CreateDate,
                                Teacher = t,
-                               Students = c.Students
+                               Students = c.Students,
+                               Resources = c.Resources
                            }).ToList();
             }
             else if (role == "Student")
@@ -115,7 +139,7 @@ namespace Server.Controllers
             };
             _context.StudentCourses.Add(studentCourse);
             _context.SaveChanges();
-            return Ok("Successfully created");
+            return Ok("Successfully");
         }
         [Route("[action]/{studentId}/{courseId}")]
         [HttpPost]
@@ -128,7 +152,7 @@ namespace Server.Controllers
             if (student == null || course == null || stdCourseCheck ==null) return NotFound();
             _context.StudentCourses.Remove(stdCourseCheck);
             _context.SaveChanges();
-            return Ok("Successfully created");
+            return Ok("Successfully");
         }
     }
 }

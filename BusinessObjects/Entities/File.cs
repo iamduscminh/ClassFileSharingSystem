@@ -20,7 +20,8 @@ namespace BusinessObjects.Entities
 
         [ForeignKey("Resource")]
         public int ResourceId { get; set; }
-        public Resource Resource { get; set; }
+        //[NotMapped]
+        //public virtual Resource Resource { get; set; }
 
     }
 }

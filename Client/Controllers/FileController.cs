@@ -28,8 +28,10 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFormFile(IFormFile file)
         {
-            var courseId = TempData["courseId"].ToString();
-            var rsId = TempData["rsId"].ToString();
+            var courseId = Request.Form["courseId"].ToString().Trim();
+            var rsId = Request.Form["rsId"].ToString().Trim();
+            //var courseId = TempData["courseId"].ToString();
+            //var rsId = TempData["rsId"].ToString();
             if (file != null && file.Length > 0)
             {
                 var content = new MultipartFormDataContent();
@@ -55,6 +57,7 @@ namespace Client.Controllers
                 {
                     //UploadDB Thành công
                     HttpResponseMessage appResponse = await appClient.PostAsJsonAsync(_fileApiUrl, fileEntity);
+                    var contentRp = appResponse.Content.ReadAsStringAsync();
                     TempData["message"] = "Upload Tài liệu thành công";
                     return Redirect($"~/Course/Detail?id={courseId}&rsId={rsId}");
                 }

@@ -35,6 +35,17 @@ namespace Server.Controllers
             return Ok("Successfully created");
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteResource(int id)
+        {
+            var rs = _context.Resourses.FirstOrDefault(x => x.ResourceId == id);
+            if (rs == null) return NotFound();
+
+            _context.Resourses.Remove(rs);
+            _context.SaveChanges();
+            return Ok("Successfully deleted");
+        }
+
         [HttpPut("{id}")]
         public IActionResult EditResource(int id, [FromBody] ResourceDto r)
         {
